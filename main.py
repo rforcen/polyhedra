@@ -8,7 +8,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QApplication, QMainWindow)
 
-from read_poly import all_dict_in_path, get_geometry
+from read_poly import all_dict_in_zip, get_geometry
 from rendererGL import RendererGL
 
 
@@ -104,6 +104,6 @@ class Main(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    mw = Main(all_dict_in_path('polyhedra'))
+    mw = Main(all_dict_in_zip('polyhedra.zip'))
 
     exit(app.exec_())

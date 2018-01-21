@@ -1,3 +1,4 @@
+import zipfile
 from glob import iglob as dir
 from math import sqrt
 from os.path import join
@@ -109,6 +110,33 @@ def get_geo_from_file(fnme):
 def all_dict_in_path(path):
     ad = [read_poly(f) for f in dir(join('polyhedra', '*'))]
     return list(filter(lambda d: d.get('solid'), ad))
+
+
+def all_dict_in_zip(znme):
+    with zipfile.ZipFile(znme) as z:
+        zfiles = [zz.filename for zz in z.infolist() if zz.filename.startswith('polyhedra/')][1:]
+        ad = [read_poly_fromz(z, f) for f in zfiles]
+    return list(filter(lambda d: d.get('solid'), ad))
+
+
+def read_poly_fromz(z, fnme):
+    ' read zip file and create a dict of tokens in string format'
+    with z.open(fnme,'r') as f:
+        lines = f.read().splitlines()
+
+        tok_dict, content, token = dict(), None, None
+
+        for l in lines:
+            l=l.decode("utf-8")
+            if l[0] == ':':
+                if token:
+                    tok_dict[token] = content
+                token = l[1:]
+                content = []
+            else:
+                content += [l]
+
+    return tok_dict
 
 
 def list_all_polys():
